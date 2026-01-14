@@ -11,7 +11,7 @@ done
 
 count=0
 while :; do
-    cat PROMPT.md | claude
+    cat PROMPT.md | claude --print --verbose --dangerously-skip-permissions --output-format stream-json
     count=$((count + 1))
     if [ -n "$max_iterations" ] && [ "$count" -ge "$max_iterations" ]; then
         break
