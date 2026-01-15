@@ -41,6 +41,7 @@ export function ListDetailClient({ listId }: ListDetailClientProps) {
   const [list, setList] = React.useState<ListData | null>(null);
   const [categories, setCategories] = React.useState<CategoryWithItems[]>([]);
   const [isOwner, setIsOwner] = React.useState(false);
+  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
 
@@ -77,6 +78,7 @@ export function ListDetailClient({ listId }: ListDetailClientProps) {
       });
       setCategories(data.categories);
       setIsOwner(data.isOwner);
+      setIsAuthenticated(data.isAuthenticated);
     } catch {
       setError("Failed to load list");
     } finally {
@@ -304,6 +306,7 @@ export function ListDetailClient({ listId }: ListDetailClientProps) {
                 onDelete={handleListDelete}
                 onTogglePublic={handleTogglePublic}
                 isUpdating={isUpdatingList}
+                canShare={isAuthenticated}
               />
             )}
           </div>

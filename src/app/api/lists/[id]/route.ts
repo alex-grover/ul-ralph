@@ -86,6 +86,7 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
       },
       categories: categoriesWithItems,
       isOwner: !!isOwner,
+      isAuthenticated: session?.type === "authenticated",
     });
   } catch (error) {
     console.error("Get list error:", error);
@@ -192,6 +193,13 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     }
 
     if (isPublic !== undefined) {
+      // Only authenticated users can change public/private status
+      if (session.type !== "authenticated") {
+        return NextResponse.json(
+          { error: "Only registered users can make lists public" },
+          { status: 403 }
+        );
+      }
       updateData.isPublic = isPublic;
     }
 

@@ -19,6 +19,7 @@ interface ListEditPopoverProps {
   onDelete: () => void;
   onTogglePublic: () => void;
   isUpdating?: boolean;
+  canShare?: boolean;
 }
 
 export function ListEditPopover({
@@ -27,6 +28,7 @@ export function ListEditPopover({
   onDelete,
   onTogglePublic,
   isUpdating,
+  canShare = true,
 }: ListEditPopoverProps) {
   const [open, setOpen] = React.useState(false);
 
@@ -65,24 +67,26 @@ export function ListEditPopover({
             <EditIcon className="h-4 w-4" />
             Edit Details
           </button>
-          <button
-            type="button"
-            onClick={handleTogglePublic}
-            disabled={isUpdating}
-            className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm text-zinc-700 hover:bg-zinc-100 disabled:opacity-50 dark:text-zinc-300 dark:hover:bg-zinc-800"
-          >
-            {list.isPublic ? (
-              <>
-                <LockIcon className="h-4 w-4" />
-                Make Private
-              </>
-            ) : (
-              <>
-                <GlobeIcon className="h-4 w-4" />
-                Make Public
-              </>
-            )}
-          </button>
+          {canShare && (
+            <button
+              type="button"
+              onClick={handleTogglePublic}
+              disabled={isUpdating}
+              className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm text-zinc-700 hover:bg-zinc-100 disabled:opacity-50 dark:text-zinc-300 dark:hover:bg-zinc-800"
+            >
+              {list.isPublic ? (
+                <>
+                  <LockIcon className="h-4 w-4" />
+                  Make Private
+                </>
+              ) : (
+                <>
+                  <GlobeIcon className="h-4 w-4" />
+                  Make Public
+                </>
+              )}
+            </button>
+          )}
           <div className="my-1 h-px bg-zinc-200 dark:bg-zinc-800" />
           <button
             type="button"
