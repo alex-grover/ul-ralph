@@ -276,20 +276,20 @@ export function ListDetailClient({ listId }: ListDetailClientProps) {
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-black">
-      <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-4xl px-3 py-4 sm:px-6 sm:py-8 lg:px-8">
         {/* List Header */}
-        <header className="mb-8">
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <h1 className="text-3xl font-bold text-zinc-900 dark:text-zinc-100">
+        <header className="mb-4 sm:mb-8">
+          <div className="flex items-start justify-between gap-2">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 sm:text-3xl break-words">
                 {list.name}
               </h1>
               {list.description && (
-                <p className="mt-2 text-zinc-600 dark:text-zinc-400">
+                <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400 sm:mt-2 sm:text-base">
                   {list.description}
                 </p>
               )}
-              <div className="mt-2 flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-500">
+              <div className="mt-1.5 flex items-center gap-2 text-sm text-zinc-500 dark:text-zinc-500 sm:mt-2">
                 {list.isPublic ? (
                   <span className="inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200">
                     Public
@@ -315,22 +315,22 @@ export function ListDetailClient({ listId }: ListDetailClientProps) {
         </header>
 
         {/* Weight Summary */}
-        <div className="mb-8">
+        <div className="mb-4 sm:mb-8">
           <WeightSummary categories={categories} />
         </div>
 
         {/* Categories Section */}
         <div>
           {categories.length === 0 ? (
-            <div className="rounded-lg border border-dashed border-zinc-300 bg-white p-8 text-center dark:border-zinc-700 dark:bg-zinc-900">
-              <p className="text-zinc-600 dark:text-zinc-400">
+            <div className="rounded-lg border border-dashed border-zinc-300 bg-white p-4 text-center dark:border-zinc-700 dark:bg-zinc-900 sm:p-8">
+              <p className="text-sm text-zinc-600 dark:text-zinc-400 sm:text-base">
                 No categories yet.{" "}
                 {isOwner && "Add a category to start organizing your gear."}
               </p>
               {isOwner && (
                 <button
                   onClick={openAddCategory}
-                  className="mt-4 inline-flex items-center rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+                  className="mt-3 inline-flex items-center rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200 sm:mt-4"
                 >
                   Add Category
                 </button>
@@ -384,7 +384,7 @@ export function ListDetailClient({ listId }: ListDetailClientProps) {
               {isOwner && (
                 <button
                   onClick={openAddCategory}
-                  className="mt-6 w-full rounded-lg border border-dashed border-zinc-300 bg-white py-4 text-sm font-medium text-zinc-600 hover:border-zinc-400 hover:text-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-200"
+                  className="mt-4 w-full rounded-lg border border-dashed border-zinc-300 bg-white py-3 text-sm font-medium text-zinc-600 hover:border-zinc-400 hover:text-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-200 sm:mt-6 sm:py-4"
                 >
                   + Add Category
                 </button>
@@ -455,11 +455,11 @@ function CategorySection({
       }`}
     >
       {/* Category Header */}
-      <div className="flex items-center justify-between border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
-        <div className="flex items-center gap-3 min-w-0 flex-1">
+      <div className="flex items-center justify-between gap-2 border-b border-zinc-200 px-3 py-2 dark:border-zinc-800 sm:gap-3 sm:px-4 sm:py-3">
+        <div className="flex items-center gap-2 min-w-0 flex-1 sm:gap-3">
           {isOwner && (
             <button
-              className="cursor-grab touch-none rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-300 active:cursor-grabbing"
+              className="cursor-grab touch-none rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-300 active:cursor-grabbing shrink-0"
               aria-label="Drag to reorder category"
               {...attributes}
               {...listeners}
@@ -468,28 +468,28 @@ function CategorySection({
             </button>
           )}
           <div className="min-w-0 flex-1">
-            <h2 className="font-semibold text-zinc-900 dark:text-zinc-100">
+            <h2 className="font-semibold text-zinc-900 dark:text-zinc-100 truncate">
               {category.name}
             </h2>
             {category.description && (
-              <p className="text-sm text-zinc-500 dark:text-zinc-500">
+              <p className="text-sm text-zinc-500 dark:text-zinc-500 truncate">
                 {category.description}
               </p>
             )}
           </div>
         </div>
         {isOwner && (
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 shrink-0 sm:gap-2">
             <button
               onClick={onEditCategory}
-              className="rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-300"
+              className="rounded p-1.5 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-300 sm:p-1"
               aria-label="Edit category"
             >
               <EditIcon className="h-4 w-4" />
             </button>
             <button
               onClick={onDeleteCategory}
-              className="rounded p-1 text-zinc-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400"
+              className="rounded p-1.5 text-zinc-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400 sm:p-1"
               aria-label="Delete category"
             >
               <TrashIcon className="h-4 w-4" />
@@ -501,7 +501,7 @@ function CategorySection({
       {/* Items List */}
       <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
         {category.items.length === 0 ? (
-          <div className="px-4 py-6 text-center text-sm text-zinc-500 dark:text-zinc-500">
+          <div className="px-3 py-4 text-center text-sm text-zinc-500 dark:text-zinc-500 sm:px-4 sm:py-6">
             No items in this category
           </div>
         ) : (
@@ -516,7 +516,7 @@ function CategorySection({
 
       {/* Add Item Button */}
       {isOwner && (
-        <div className="border-t border-zinc-200 px-4 py-2 dark:border-zinc-800">
+        <div className="border-t border-zinc-200 px-3 py-1.5 dark:border-zinc-800 sm:px-4 sm:py-2">
           <button
             onClick={onAddItem}
             className="w-full rounded py-2 text-sm text-zinc-500 hover:bg-zinc-50 hover:text-zinc-700 dark:text-zinc-500 dark:hover:bg-zinc-800 dark:hover:text-zinc-300"
@@ -545,11 +545,11 @@ function ItemRow({ item, isOwner, onEdit, onDelete, dragHandleProps }: ItemRowPr
   const totalWeight = item.weightAmount * item.quantity;
 
   return (
-    <div className="group flex items-center gap-4 px-4 py-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
+    <div className="group flex items-center gap-2 px-3 py-2 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 sm:gap-4 sm:px-4 sm:py-3">
       {/* Drag Handle */}
       {isOwner && dragHandleProps && (
         <button
-          className="cursor-grab touch-none rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-300 active:cursor-grabbing"
+          className="cursor-grab touch-none rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-300 active:cursor-grabbing shrink-0"
           aria-label="Drag to reorder item"
           {...dragHandleProps.attributes}
           {...dragHandleProps.listeners}
@@ -559,13 +559,13 @@ function ItemRow({ item, isOwner, onEdit, onDelete, dragHandleProps }: ItemRowPr
       )}
       {/* Item Info */}
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <span className="font-medium text-zinc-900 dark:text-zinc-100">
+        <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+          <span className="font-medium text-zinc-900 dark:text-zinc-100 break-words">
             {item.name}
           </span>
           {item.label && item.label !== "none" && (
             <span
-              className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
+              className={`inline-flex items-center rounded-full px-1.5 py-0.5 text-xs font-medium sm:px-2 ${
                 item.label === "worn"
                   ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
                   : "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200"
@@ -579,7 +579,7 @@ function ItemRow({ item, isOwner, onEdit, onDelete, dragHandleProps }: ItemRowPr
               href={item.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300"
+              className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300 shrink-0"
               aria-label="Open link"
             >
               <LinkIcon className="h-3.5 w-3.5" />
@@ -594,30 +594,30 @@ function ItemRow({ item, isOwner, onEdit, onDelete, dragHandleProps }: ItemRowPr
       </div>
 
       {/* Weight & Quantity */}
-      <div className="flex items-center gap-4 text-sm">
+      <div className="flex items-center gap-2 text-sm shrink-0 sm:gap-4">
         {item.quantity > 1 && (
           <span className="text-zinc-500 dark:text-zinc-500">
             x{item.quantity}
           </span>
         )}
-        <span className="text-zinc-700 dark:text-zinc-300 tabular-nums">
+        <span className="text-zinc-700 dark:text-zinc-300 tabular-nums whitespace-nowrap">
           {formatWeight(totalWeight, item.weightUnit)}
         </span>
       </div>
 
-      {/* Actions */}
+      {/* Actions - visible on mobile, hover on desktop */}
       {isOwner && (
-        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="flex items-center gap-1 shrink-0 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
           <button
             onClick={onEdit}
-            className="rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-700 dark:hover:text-zinc-300"
+            className="rounded p-1.5 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-700 dark:hover:text-zinc-300 sm:p-1"
             aria-label="Edit item"
           >
             <EditIcon className="h-4 w-4" />
           </button>
           <button
             onClick={onDelete}
-            className="rounded p-1 text-zinc-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400"
+            className="rounded p-1.5 text-zinc-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-900/20 dark:hover:text-red-400 sm:p-1"
             aria-label="Delete item"
           >
             <TrashIcon className="h-4 w-4" />

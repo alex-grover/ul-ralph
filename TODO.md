@@ -74,7 +74,7 @@ A gear tracking application for ultralight backpacking, inspired by lighterpack.
 - [x] Implement weight calculations (base, worn, consumable)
 - [x] Handle worn items with quantity > 1 (first worn, rest base weight)
 - [x] Implement unit conversion for display (g, kg, lbs, oz)
-- [ ] Make list detail page fully responsive
+- [x] Make list detail page fully responsive
 
 ### Public List Page
 - [x] Create public list route at /[username]/[slug]
