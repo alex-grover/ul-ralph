@@ -8,6 +8,7 @@ import { ItemForm } from "@/components/item-form";
 import { WeightSummary } from "@/components/weight-summary";
 import { ListEditPopover } from "@/components/list-edit-popover";
 import { SortableCategoryList, type DragHandleProps } from "@/components/sortable-category-list";
+import { SortableItemList, ItemDndProvider, type ItemDragHandleProps } from "@/components/sortable-item-list";
 import type { Category, Item } from "@/db/schema";
 
 interface ListData {
@@ -337,24 +338,49 @@ export function ListDetailClient({ listId }: ListDetailClientProps) {
             </div>
           ) : (
             <>
-              <SortableCategoryList
+              <ItemDndProvider
                 categories={categories}
                 listId={listId}
                 isOwner={isOwner}
-                onReorder={setCategories}
-                renderCategory={(category, dragHandleProps) => (
-                  <CategorySection
-                    category={category}
-                    isOwner={isOwner}
-                    dragHandleProps={dragHandleProps}
-                    onEditCategory={() => openEditCategory(category)}
-                    onDeleteCategory={() => handleCategoryDelete(category.id)}
-                    onAddItem={() => openAddItem(category.id)}
-                    onEditItem={openEditItem}
-                    onDeleteItem={(itemId) => handleItemDelete(itemId, category.id)}
-                  />
+                onCategoriesChange={setCategories}
+                renderOverlayItem={(item) => (
+                  <div className="rounded-lg border border-zinc-200 bg-white shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
+                    <ItemRow
+                      item={item}
+                      isOwner={false}
+                      onEdit={() => {}}
+                      onDelete={() => {}}
+                    />
+                  </div>
                 )}
-              />
+              >
+                <SortableCategoryList
+                  categories={categories}
+                  listId={listId}
+                  isOwner={isOwner}
+                  onReorder={setCategories}
+                  renderCategory={(category, dragHandleProps) => (
+                    <CategorySection
+                      category={category}
+                      isOwner={isOwner}
+                      dragHandleProps={dragHandleProps}
+                      onEditCategory={() => openEditCategory(category)}
+                      onDeleteCategory={() => handleCategoryDelete(category.id)}
+                      onAddItem={() => openAddItem(category.id)}
+                      renderItemRow={(item, itemDragHandleProps) => (
+                        <ItemRow
+                          key={item.id}
+                          item={item}
+                          isOwner={isOwner}
+                          onEdit={() => openEditItem(item)}
+                          onDelete={() => handleItemDelete(item.id, category.id)}
+                          dragHandleProps={itemDragHandleProps}
+                        />
+                      )}
+                    />
+                  )}
+                />
+              </ItemDndProvider>
               {isOwner && (
                 <button
                   onClick={openAddCategory}
@@ -408,8 +434,7 @@ interface CategorySectionProps {
   onEditCategory: () => void;
   onDeleteCategory: () => void;
   onAddItem: () => void;
-  onEditItem: (item: Item) => void;
-  onDeleteItem: (itemId: string) => void;
+  renderItemRow: (item: Item, itemDragHandleProps: ItemDragHandleProps) => React.ReactNode;
 }
 
 function CategorySection({
@@ -419,8 +444,7 @@ function CategorySection({
   onEditCategory,
   onDeleteCategory,
   onAddItem,
-  onEditItem,
-  onDeleteItem,
+  renderItemRow,
 }: CategorySectionProps) {
   const { attributes, listeners, isDragging } = dragHandleProps;
 
@@ -481,15 +505,12 @@ function CategorySection({
             No items in this category
           </div>
         ) : (
-          category.items.map((item) => (
-            <ItemRow
-              key={item.id}
-              item={item}
-              isOwner={isOwner}
-              onEdit={() => onEditItem(item)}
-              onDelete={() => onDeleteItem(item.id)}
-            />
-          ))
+          <SortableItemList
+            items={category.items}
+            categoryId={category.id}
+            isOwner={isOwner}
+            renderItem={(item, itemDragHandleProps) => renderItemRow(item, itemDragHandleProps)}
+          />
         )}
       </div>
 
@@ -513,9 +534,10 @@ interface ItemRowProps {
   isOwner: boolean;
   onEdit: () => void;
   onDelete: () => void;
+  dragHandleProps?: ItemDragHandleProps;
 }
 
-function ItemRow({ item, isOwner, onEdit, onDelete }: ItemRowProps) {
+function ItemRow({ item, isOwner, onEdit, onDelete, dragHandleProps }: ItemRowProps) {
   const formatWeight = (amount: number, unit: string) => {
     return `${amount} ${unit}`;
   };
@@ -524,6 +546,17 @@ function ItemRow({ item, isOwner, onEdit, onDelete }: ItemRowProps) {
 
   return (
     <div className="group flex items-center gap-4 px-4 py-3 hover:bg-zinc-50 dark:hover:bg-zinc-800/50">
+      {/* Drag Handle */}
+      {isOwner && dragHandleProps && (
+        <button
+          className="cursor-grab touch-none rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-300 active:cursor-grabbing"
+          aria-label="Drag to reorder item"
+          {...dragHandleProps.attributes}
+          {...dragHandleProps.listeners}
+        >
+          <DragHandleIcon className="h-4 w-4" />
+        </button>
+      )}
       {/* Item Info */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">

@@ -65,6 +65,11 @@ export function SortableCategoryList({
       const oldIndex = categories.findIndex((c) => c.id === active.id);
       const newIndex = categories.findIndex((c) => c.id === over.id);
 
+      // Only handle if both active and over are categories
+      if (oldIndex === -1 || newIndex === -1) {
+        return;
+      }
+
       const newCategories = arrayMove(categories, oldIndex, newIndex);
 
       // Optimistically update the UI
