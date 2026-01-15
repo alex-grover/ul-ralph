@@ -27,7 +27,6 @@ let emailsSent: Array<{
 
 // Track database operations
 let dbSelectCalls = 0;
-let currentSelectTarget: "users" | "tokens" = "users";
 
 // Mock email service
 vi.mock("@/lib/email", () => ({
@@ -41,7 +40,7 @@ vi.mock("@/lib/email", () => ({
 vi.mock("@/db", () => ({
   db: {
     select: vi.fn().mockImplementation(() => ({
-      from: vi.fn().mockImplementation((table) => {
+      from: vi.fn().mockImplementation((_table) => {
         // Determine which select operation this is
         const selectIndex = dbSelectCalls++;
         return {

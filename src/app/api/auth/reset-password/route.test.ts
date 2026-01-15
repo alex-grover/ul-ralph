@@ -15,7 +15,7 @@ let mockPasswordResetTokens: Array<{
   expiresAt: Date;
 }> = [];
 
-let mockSessions: Array<{
+let _mockSessions: Array<{
   id: string;
   userId: string;
   sessionToken: string;
@@ -96,7 +96,7 @@ describe("POST /api/auth/reset-password", () => {
         expiresAt: new Date(Date.now() + 60 * 60 * 1000), // Valid for 1 hour
       },
     ];
-    mockSessions = [
+    _mockSessions = [
       {
         id: crypto.randomUUID(),
         userId: userId,

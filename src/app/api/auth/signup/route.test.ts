@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { NextRequest } from "next/server";
-import { hashPassword } from "@/lib/auth";
 
 // Mock data storage
 let mockUsers: Array<{
@@ -12,7 +11,7 @@ let mockUsers: Array<{
   updatedAt: Date;
 }> = [];
 
-let mockSessions: Array<{
+let _mockSessions: Array<{
   id: string;
   userId: string;
   sessionToken: string;
@@ -20,14 +19,14 @@ let mockSessions: Array<{
   expiresAt: Date;
 }> = [];
 
-let mockAnonymousSessions: Array<{
+let _mockAnonymousSessions: Array<{
   id: string;
   sessionToken: string;
   createdAt: Date;
   expiresAt: Date;
 }> = [];
 
-let mockLists: Array<{
+let _mockLists: Array<{
   id: string;
   userId: string | null;
   anonymousSessionId: string | null;
@@ -64,7 +63,7 @@ vi.mock("next/headers", () => ({
 vi.mock("@/db", () => ({
   db: {
     select: vi.fn().mockImplementation(() => ({
-      from: vi.fn().mockImplementation((table) => ({
+      from: vi.fn().mockImplementation((_table) => ({
         where: vi.fn().mockImplementation(() => ({
           limit: vi.fn().mockImplementation(() => {
             // This is for the existing user check
@@ -111,9 +110,9 @@ import { POST } from "./route";
 describe("POST /api/auth/signup", () => {
   beforeEach(() => {
     mockUsers = [];
-    mockSessions = [];
-    mockAnonymousSessions = [];
-    mockLists = [];
+    _mockSessions = [];
+    _mockAnonymousSessions = [];
+    _mockLists = [];
     mockCookies.clear();
     vi.clearAllMocks();
   });
