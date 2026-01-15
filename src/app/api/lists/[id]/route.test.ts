@@ -92,7 +92,7 @@ vi.mock("@/lib/cache", () => ({
 }));
 
 // Helper to get current session
-function getCurrentSessionFromMock(): {
+function _getCurrentSessionFromMock(): {
   type: "authenticated" | "anonymous";
   userId?: string;
   anonymousSessionId?: string;

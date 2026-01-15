@@ -42,7 +42,7 @@ const futureDate = new Date(now.getTime() + 24 * 60 * 60 * 1000);
 
 // Track query context
 let isSlugQuery = false;
-let currentUserId: string | null = null;
+let _currentUserId: string | null = null;
 let currentAnonSessionId: string | null = null;
 
 // Mock next/headers
@@ -261,7 +261,7 @@ describe("GET /api/lists", () => {
     mockSessions = [];
     mockCookies.clear();
     isSlugQuery = false;
-    currentUserId = null;
+    _currentUserId = null;
     currentAnonSessionId = null;
     vi.clearAllMocks();
   });
@@ -462,7 +462,7 @@ describe("POST /api/lists", () => {
     mockSessions = [];
     mockCookies.clear();
     isSlugQuery = false;
-    currentUserId = null;
+    _currentUserId = null;
     currentAnonSessionId = null;
     vi.clearAllMocks();
   });
