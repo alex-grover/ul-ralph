@@ -83,9 +83,9 @@ A gear tracking application for ultralight backpacking, inspired by lighterpack.
 - [x] Handle 404 for non-existent or private lists
 
 ### Homepage & Routing
-- [ ] Redirect authenticated users to most recently edited list
+- [x] Redirect authenticated users to most recently edited list
 - [ ] Implement streaming SSR for list page
-- [ ] Handle anonymous users landing on blank list detail page
+- [x] Handle anonymous users landing on blank list detail page
 - [ ] Ensure anonymous users can perform all actions except sharing
 
 ### Polish & Testing
