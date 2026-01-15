@@ -19,6 +19,8 @@ import type {
   UpdateItemInput,
 } from "@/lib/validations/item";
 import type { Item } from "@/db/schema";
+import type { WeightUnit } from "@/lib/weight";
+import { WeightUnitSelect } from "@/components/ui/weight-unit-select";
 
 interface ItemFormProps {
   open: boolean;
@@ -70,8 +72,8 @@ export function ItemForm({
   const [weightAmount, setWeightAmount] = React.useState(
     item?.weightAmount?.toString() ?? "0"
   );
-  const [weightUnit, setWeightUnit] = React.useState<"g" | "oz">(
-    (item?.weightUnit as "g" | "oz") ?? "g"
+  const [weightUnit, setWeightUnit] = React.useState<WeightUnit>(
+    (item?.weightUnit as WeightUnit) ?? "g"
   );
   const [label, setLabel] = React.useState<"none" | "worn" | "consumable">(
     (item?.label as "none" | "worn" | "consumable") ?? "none"
@@ -90,7 +92,7 @@ export function ItemForm({
       setDescription(item?.description ?? "");
       setUrl(item?.url ?? "");
       setWeightAmount(item?.weightAmount?.toString() ?? "0");
-      setWeightUnit((item?.weightUnit as "g" | "oz") ?? "g");
+      setWeightUnit((item?.weightUnit as WeightUnit) ?? "g");
       setLabel((item?.label as "none" | "worn" | "consumable") ?? "none");
       setQuantity(item?.quantity?.toString() ?? "1");
       setError(null);
@@ -259,16 +261,13 @@ export function ItemForm({
                 >
                   Unit
                 </label>
-                <select
+                <WeightUnitSelect
                   id="weightUnit"
                   value={weightUnit}
-                  onChange={(e) => setWeightUnit(e.target.value as "g" | "oz")}
+                  onChange={setWeightUnit}
                   disabled={isSubmitting}
-                  className={selectClassName(!!fieldErrors.weightUnit)}
-                >
-                  <option value="g">Grams (g)</option>
-                  <option value="oz">Ounces (oz)</option>
-                </select>
+                  hasError={!!fieldErrors.weightUnit}
+                />
                 {fieldErrors.weightUnit && (
                   <p className="text-sm text-red-600 dark:text-red-400">
                     {fieldErrors.weightUnit[0]}

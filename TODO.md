@@ -65,7 +65,7 @@ A gear tracking application for ultralight backpacking, inspired by lighterpack.
 - [x] Create sidebar component with Vaul for viewing lists (persists open state in cookie)
 - [ ] Create drag-and-drop for category reordering
 - [ ] Create drag-and-drop for item reordering (including cross-category)
-- [ ] Create weight unit selector component (g, kg, lbs, oz)
+- [x] Create weight unit selector component (g, kg, lbs, oz)
 - [x] Create dark mode toggle component
 
 ### List Detail Page

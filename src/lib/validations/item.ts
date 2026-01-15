@@ -22,7 +22,7 @@ export const createItemSchema = z.object({
     .min(0, "Weight cannot be negative")
     .optional()
     .default(0),
-  weightUnit: z.enum(["g", "oz"], { message: "Weight unit must be 'g' or 'oz'" }).optional().default("g"),
+  weightUnit: z.enum(["g", "oz", "kg", "lbs"], { message: "Weight unit must be 'g', 'oz', 'kg', or 'lbs'" }).optional().default("g"),
   label: z
     .enum(["none", "worn", "consumable"], {
       message: "Label must be 'none', 'worn', or 'consumable'",
@@ -57,7 +57,7 @@ export const updateItemSchema = z.object({
     .optional()
     .nullable(),
   weightAmount: z.number().min(0, "Weight cannot be negative").optional(),
-  weightUnit: z.enum(["g", "oz"], { message: "Weight unit must be 'g' or 'oz'" }).optional(),
+  weightUnit: z.enum(["g", "oz", "kg", "lbs"], { message: "Weight unit must be 'g', 'oz', 'kg', or 'lbs'" }).optional(),
   label: z
     .enum(["none", "worn", "consumable"], {
       message: "Label must be 'none', 'worn', or 'consumable'",
