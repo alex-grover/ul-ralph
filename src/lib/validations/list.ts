@@ -13,3 +13,19 @@ export const createListSchema = z.object({
 });
 
 export type CreateListInput = z.infer<typeof createListSchema>;
+
+export const updateListSchema = z.object({
+  name: z
+    .string()
+    .min(1, "Name is required")
+    .max(255, "Name must be at most 255 characters")
+    .optional(),
+  description: z
+    .string()
+    .max(5000, "Description must be at most 5000 characters")
+    .optional()
+    .nullable(),
+  isPublic: z.boolean().optional(),
+});
+
+export type UpdateListInput = z.infer<typeof updateListSchema>;
