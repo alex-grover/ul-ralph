@@ -498,11 +498,11 @@ function ItemRow({ item, isOwner, onEdit, onDelete, dragHandleProps }: ItemRowPr
   const totalWeight = item.weightAmount * item.quantity;
 
   return (
-    <div className="group flex items-center gap-2 px-3 py-2 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 sm:gap-4 sm:px-4 sm:py-3">
+    <div className="group flex items-start gap-2 px-3 py-2 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 sm:items-center sm:gap-4 sm:px-4 sm:py-3">
       {/* Drag Handle */}
       {isOwner && dragHandleProps && (
         <button
-          className="cursor-grab touch-none rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-300 active:cursor-grabbing shrink-0"
+          className="cursor-grab touch-none rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-300 active:cursor-grabbing shrink-0 mt-0.5 sm:mt-0"
           aria-label="Drag to reorder item"
           {...dragHandleProps.attributes}
           {...dragHandleProps.listeners}
@@ -512,7 +512,7 @@ function ItemRow({ item, isOwner, onEdit, onDelete, dragHandleProps }: ItemRowPr
       )}
       {/* Item Info */}
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+        <div className="flex items-start gap-1.5 sm:items-center sm:gap-2 flex-wrap">
           <span className="font-medium text-zinc-900 dark:text-zinc-100 break-words">
             {item.name}
           </span>
@@ -540,14 +540,25 @@ function ItemRow({ item, isOwner, onEdit, onDelete, dragHandleProps }: ItemRowPr
           )}
         </div>
         {item.description && (
-          <p className="mt-0.5 text-sm text-zinc-500 dark:text-zinc-500 truncate">
+          <p className="mt-0.5 text-sm text-zinc-500 dark:text-zinc-500 line-clamp-2 sm:truncate">
             {item.description}
           </p>
         )}
+        {/* Weight & Quantity - inline on mobile for better layout */}
+        <div className="mt-1 flex items-center gap-2 text-sm sm:hidden">
+          {item.quantity > 1 && (
+            <span className="text-zinc-500 dark:text-zinc-500">
+              x{item.quantity}
+            </span>
+          )}
+          <span className="text-zinc-700 dark:text-zinc-300 tabular-nums">
+            {formatWeight(totalWeight, item.weightUnit)}
+          </span>
+        </div>
       </div>
 
-      {/* Weight & Quantity */}
-      <div className="flex items-center gap-2 text-sm shrink-0 sm:gap-4">
+      {/* Weight & Quantity - hidden on mobile, shown on desktop */}
+      <div className="hidden sm:flex items-center gap-2 text-sm shrink-0 sm:gap-4">
         {item.quantity > 1 && (
           <span className="text-zinc-500 dark:text-zinc-500">
             x{item.quantity}

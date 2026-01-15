@@ -64,7 +64,7 @@ function ToastContainer({ toasts, onDismiss }: ToastContainerProps) {
   if (toasts.length === 0) return null;
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 flex flex-col gap-2">
+    <div className="fixed bottom-4 left-4 right-4 z-50 flex flex-col items-center gap-2 sm:left-auto sm:right-4 sm:items-end">
       {toasts.map((toast) => (
         <ToastItem key={toast.id} toast={toast} onDismiss={onDismiss} />
       ))}
@@ -86,7 +86,7 @@ function ToastItem({ toast, onDismiss }: ToastItemProps) {
 
   return (
     <div
-      className={`${bgColor} text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 min-w-[280px] max-w-sm animate-in slide-in-from-right-full duration-200`}
+      className={`${bgColor} text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 w-full sm:w-auto sm:min-w-[280px] sm:max-w-sm animate-in slide-in-from-bottom-full sm:slide-in-from-right-full duration-200`}
       role="alert"
     >
       <ToastIcon type={toast.type} />

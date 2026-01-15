@@ -122,7 +122,7 @@ export function Sidebar({ children }: SidebarProps) {
     >
       <DrawerPrimitive.Portal>
         <DrawerPrimitive.Overlay className="fixed inset-0 z-50 bg-black/80" />
-        <DrawerPrimitive.Content className="fixed inset-y-0 left-0 z-50 flex h-full w-[280px] flex-col border-r border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
+        <DrawerPrimitive.Content className="fixed inset-y-0 left-0 z-50 flex h-full w-[85vw] max-w-[280px] flex-col border-r border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
           {children}
         </DrawerPrimitive.Content>
       </DrawerPrimitive.Portal>
