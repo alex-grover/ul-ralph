@@ -14,18 +14,18 @@ A gear tracking application for ultralight backpacking, inspired by lighterpack.
 
 ### Project Setup
 - [x] Initialize Next.js project with TypeScript and Tailwind
-- [ ] Set up Drizzle ORM with PostgreSQL connection
+- [x] Set up Drizzle ORM with PostgreSQL connection
 - [ ] Configure next-themes for dark mode support
 - [ ] Install and configure Vaul library
-- [ ] Set up project folder structure (components, lib, db, etc.)
+- [x] Set up project folder structure (components, lib, db, etc.)
 
 ### Database Schema
-- [ ] Create users table (id, username, email, password_hash, created_at, updated_at)
-- [ ] Create anonymous_sessions table for anonymous user support
-- [ ] Create lists table (id, user_id, anonymous_session_id, name, slug, description, is_public, created_at, updated_at)
-- [ ] Create categories table (id, list_id, name, description, position, created_at, updated_at)
-- [ ] Create items table (id, category_id, name, description, url, weight_amount, weight_unit, label, quantity, position, created_at, updated_at)
-- [ ] Set up database migrations
+- [x] Create users table (id, username, email, password_hash, created_at, updated_at)
+- [x] Create anonymous_sessions table for anonymous user support
+- [x] Create lists table (id, user_id, anonymous_session_id, name, slug, description, is_public, created_at, updated_at)
+- [x] Create categories table (id, list_id, name, description, position, created_at, updated_at)
+- [x] Create items table (id, category_id, name, description, url, weight_amount, weight_unit, label, quantity, position, created_at, updated_at)
+- [x] Set up database migrations
 
 ### Authentication
 - [ ] Implement sign up (username, email, password) with validation
