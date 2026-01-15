@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
 import { ListForm } from "@/components/list-form";
 import { CategoryForm } from "@/components/category-form";
 import { ItemForm } from "@/components/item-form";
@@ -21,31 +20,35 @@ interface ListData {
   updatedAt: Date;
 }
 
-interface ListApiResponse {
-  id: string;
-  name: string;
-  slug: string;
-  description: string | null;
-  isPublic: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
-
 interface CategoryWithItems extends Category {
   items: Item[];
 }
 
-interface ListDetailClientProps {
-  listId: string;
+export interface ListPageData {
+  list: {
+    id: string;
+    name: string;
+    slug: string;
+    description: string | null;
+    isPublic: boolean;
+    createdAt: Date;
+    updatedAt: Date;
+  };
+  categories: CategoryWithItems[];
+  isOwner: boolean;
+  isAuthenticated: boolean;
 }
 
-export function ListDetailClient({ listId }: ListDetailClientProps) {
-  const [list, setList] = React.useState<ListData | null>(null);
-  const [categories, setCategories] = React.useState<CategoryWithItems[]>([]);
-  const [isOwner, setIsOwner] = React.useState(false);
-  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [error, setError] = React.useState<string | null>(null);
+interface ListDetailClientProps {
+  listId: string;
+  initialData: ListPageData;
+}
+
+export function ListDetailClient({ listId, initialData }: ListDetailClientProps) {
+  const [list, setList] = React.useState<ListData>(initialData.list);
+  const [categories, setCategories] = React.useState<CategoryWithItems[]>(initialData.categories);
+  const [isOwner] = React.useState(initialData.isOwner);
+  const [isAuthenticated] = React.useState(initialData.isAuthenticated);
 
   // Form dialogs state
   const [isListFormOpen, setIsListFormOpen] = React.useState(false);
@@ -56,48 +59,11 @@ export function ListDetailClient({ listId }: ListDetailClientProps) {
   const [selectedCategoryId, setSelectedCategoryId] = React.useState<string>("");
   const [isUpdatingList, setIsUpdatingList] = React.useState(false);
 
-  const fetchList = React.useCallback(async () => {
-    try {
-      const response = await fetch(`/api/lists/${listId}`);
-
-      if (!response.ok) {
-        if (response.status === 404) {
-          setError("List not found");
-        } else if (response.status === 403) {
-          setError("You don't have permission to view this list");
-        } else {
-          setError("Failed to load list");
-        }
-        return;
-      }
-
-      const data = await response.json();
-      const apiList: ListApiResponse = data.list;
-      setList({
-        ...apiList,
-        createdAt: new Date(apiList.createdAt),
-        updatedAt: new Date(apiList.updatedAt),
-      });
-      setCategories(data.categories);
-      setIsOwner(data.isOwner);
-      setIsAuthenticated(data.isAuthenticated);
-    } catch {
-      setError("Failed to load list");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [listId]);
-
-  React.useEffect(() => {
-    fetchList();
-  }, [fetchList]);
-
   const handleListUpdate = (updatedList: { id: string; name: string; slug: string; description: string | null; isPublic: boolean; createdAt: Date; updatedAt: Date }) => {
     setList(updatedList);
   };
 
   const handleListDelete = async () => {
-    if (!list) return;
 
     if (!confirm(`Are you sure you want to delete "${list.name}"? This will also delete all categories and items in this list.`)) {
       return;
@@ -247,32 +213,6 @@ export function ListDetailClient({ listId }: ListDetailClientProps) {
     setEditingItem(item);
     setIsItemFormOpen(true);
   };
-
-  if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-black">
-        <div className="text-zinc-600 dark:text-zinc-400">Loading...</div>
-      </div>
-    );
-  }
-
-  if (error || !list) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-black">
-        <div className="text-center">
-          <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
-            {error || "List not found"}
-          </h1>
-          <Link
-            href="/"
-            className="mt-4 inline-block text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
-          >
-            Go back home
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-zinc-50 dark:bg-black">

@@ -84,7 +84,7 @@ A gear tracking application for ultralight backpacking, inspired by lighterpack.
 
 ### Homepage & Routing
 - [x] Redirect authenticated users to most recently edited list
-- [ ] Implement streaming SSR for list page
+- [x] Implement streaming SSR for list page
 - [x] Handle anonymous users landing on blank list detail page
 - [x] Ensure anonymous users can perform all actions except sharing
 
