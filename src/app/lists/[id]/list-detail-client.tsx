@@ -6,6 +6,7 @@ import { CategoryForm } from "@/components/category-form";
 import { ItemForm } from "@/components/item-form";
 import { WeightSummary } from "@/components/weight-summary";
 import { ListEditPopover } from "@/components/list-edit-popover";
+import { DeleteConfirmDialog } from "@/components/delete-confirm-dialog";
 import { SortableCategoryList, type DragHandleProps } from "@/components/sortable-category-list";
 import { SortableItemList, ItemDndProvider, type ItemDragHandleProps } from "@/components/sortable-item-list";
 import { useToast } from "@/components/ui/toast";
@@ -61,15 +62,24 @@ export function ListDetailClient({ listId, initialData }: ListDetailClientProps)
   const [selectedCategoryId, setSelectedCategoryId] = React.useState<string>("");
   const [isUpdatingList, setIsUpdatingList] = React.useState(false);
 
+  // Delete confirmation dialogs state
+  const [isListDeleteOpen, setIsListDeleteOpen] = React.useState(false);
+  const [isDeletingList, setIsDeletingList] = React.useState(false);
+  const [categoryToDelete, setCategoryToDelete] = React.useState<string | null>(null);
+  const [isDeletingCategory, setIsDeletingCategory] = React.useState(false);
+  const [itemToDelete, setItemToDelete] = React.useState<{ itemId: string; categoryId: string } | null>(null);
+  const [isDeletingItem, setIsDeletingItem] = React.useState(false);
+
   const handleListUpdate = (updatedList: { id: string; name: string; slug: string; description: string | null; isPublic: boolean; createdAt: Date; updatedAt: Date }) => {
     setList(updatedList);
   };
 
-  const handleListDelete = async () => {
-    if (!confirm(`Are you sure you want to delete "${list.name}"? This will also delete all categories and items in this list.`)) {
-      return;
-    }
+  const openListDeleteDialog = () => {
+    setIsListDeleteOpen(true);
+  };
 
+  const handleListDelete = async () => {
+    setIsDeletingList(true);
     try {
       const response = await fetch(`/api/lists/${listId}`, {
         method: "DELETE",
@@ -84,6 +94,8 @@ export function ListDetailClient({ listId, initialData }: ListDetailClientProps)
       }
     } catch {
       showToast("Failed to delete list", "error");
+    } finally {
+      setIsDeletingList(false);
     }
   };
 
@@ -132,24 +144,29 @@ export function ListDetailClient({ listId, initialData }: ListDetailClientProps)
     );
   };
 
-  const handleCategoryDelete = async (categoryId: string) => {
-    if (!confirm("Are you sure you want to delete this category? All items in it will also be deleted.")) {
-      return;
-    }
+  const openCategoryDeleteDialog = (categoryId: string) => {
+    setCategoryToDelete(categoryId);
+  };
 
+  const handleCategoryDelete = async () => {
+    if (!categoryToDelete) return;
+
+    setIsDeletingCategory(true);
     try {
-      const response = await fetch(`/api/categories/${categoryId}`, {
+      const response = await fetch(`/api/categories/${categoryToDelete}`, {
         method: "DELETE",
       });
 
       if (response.ok) {
-        setCategories((prev) => prev.filter((c) => c.id !== categoryId));
+        setCategories((prev) => prev.filter((c) => c.id !== categoryToDelete));
         showToast("Category deleted", "success");
       } else {
         showToast("Failed to delete category", "error");
       }
     } catch {
       showToast("Failed to delete category", "error");
+    } finally {
+      setIsDeletingCategory(false);
     }
   };
 
@@ -178,21 +195,24 @@ export function ListDetailClient({ listId, initialData }: ListDetailClientProps)
     );
   };
 
-  const handleItemDelete = async (itemId: string, categoryId: string) => {
-    if (!confirm("Are you sure you want to delete this item?")) {
-      return;
-    }
+  const openItemDeleteDialog = (itemId: string, categoryId: string) => {
+    setItemToDelete({ itemId, categoryId });
+  };
 
+  const handleItemDelete = async () => {
+    if (!itemToDelete) return;
+
+    setIsDeletingItem(true);
     try {
-      const response = await fetch(`/api/items/${itemId}`, {
+      const response = await fetch(`/api/items/${itemToDelete.itemId}`, {
         method: "DELETE",
       });
 
       if (response.ok) {
         setCategories((prev) =>
           prev.map((c) =>
-            c.id === categoryId
-              ? { ...c, items: c.items.filter((i) => i.id !== itemId) }
+            c.id === itemToDelete.categoryId
+              ? { ...c, items: c.items.filter((i) => i.id !== itemToDelete.itemId) }
               : c
           )
         );
@@ -202,6 +222,8 @@ export function ListDetailClient({ listId, initialData }: ListDetailClientProps)
       }
     } catch {
       showToast("Failed to delete item", "error");
+    } finally {
+      setIsDeletingItem(false);
     }
   };
 
@@ -258,7 +280,7 @@ export function ListDetailClient({ listId, initialData }: ListDetailClientProps)
               <ListEditPopover
                 list={list}
                 onEdit={() => setIsListFormOpen(true)}
-                onDelete={handleListDelete}
+                onDelete={openListDeleteDialog}
                 onTogglePublic={handleTogglePublic}
                 isUpdating={isUpdatingList}
                 canShare={isAuthenticated}
@@ -318,7 +340,7 @@ export function ListDetailClient({ listId, initialData }: ListDetailClientProps)
                       isOwner={isOwner}
                       dragHandleProps={dragHandleProps}
                       onEditCategory={() => openEditCategory(category)}
-                      onDeleteCategory={() => handleCategoryDelete(category.id)}
+                      onDeleteCategory={() => openCategoryDeleteDialog(category.id)}
                       onAddItem={() => openAddItem(category.id)}
                       renderItemRow={(item, itemDragHandleProps) => (
                         <ItemRow
@@ -326,7 +348,7 @@ export function ListDetailClient({ listId, initialData }: ListDetailClientProps)
                           item={item}
                           isOwner={isOwner}
                           onEdit={() => openEditItem(item)}
-                          onDelete={() => handleItemDelete(item.id, category.id)}
+                          onDelete={() => openItemDeleteDialog(item.id, category.id)}
                           dragHandleProps={itemDragHandleProps}
                         />
                       )}
@@ -374,6 +396,34 @@ export function ListDetailClient({ listId, initialData }: ListDetailClientProps)
               onSuccess={editingItem ? handleItemUpdated : handleItemCreated}
             />
           )}
+
+          {/* Delete Confirmation Dialogs */}
+          <DeleteConfirmDialog
+            open={isListDeleteOpen}
+            onOpenChange={setIsListDeleteOpen}
+            title="Delete List"
+            description={`Are you sure you want to delete "${list.name}"? This will also delete all categories and items in this list.`}
+            onConfirm={handleListDelete}
+            isDeleting={isDeletingList}
+          />
+
+          <DeleteConfirmDialog
+            open={categoryToDelete !== null}
+            onOpenChange={(open) => !open && setCategoryToDelete(null)}
+            title="Delete Category"
+            description="Are you sure you want to delete this category? All items in it will also be deleted."
+            onConfirm={handleCategoryDelete}
+            isDeleting={isDeletingCategory}
+          />
+
+          <DeleteConfirmDialog
+            open={itemToDelete !== null}
+            onOpenChange={(open) => !open && setItemToDelete(null)}
+            title="Delete Item"
+            description="Are you sure you want to delete this item?"
+            onConfirm={handleItemDelete}
+            isDeleting={isDeletingItem}
+          />
         </>
       )}
     </div>
