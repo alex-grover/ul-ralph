@@ -13,7 +13,7 @@ A gear tracking application for ultralight backpacking, inspired by lighterpack.
 ## Tasks
 
 ### Project Setup
-- [ ] Initialize Next.js project with TypeScript and Tailwind
+- [x] Initialize Next.js project with TypeScript and Tailwind
 - [ ] Set up Drizzle ORM with PostgreSQL connection
 - [ ] Configure next-themes for dark mode support
 - [ ] Install and configure Vaul library
