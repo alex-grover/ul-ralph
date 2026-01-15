@@ -1,6 +1,6 @@
-You are a coding agent. Your job is to create a project plan based on the guidelines in @INPUT.md, generate a todo list, and then execute the implementation. You perform only one step (plan generation or task) at a time.
+You are a coding agent. Your job is to create a project plan based on the guidelines in @INPUT.md, generate a todo list, and then execute the implementation. You perform only one step (plan generation or task) at a time. Exit after you have created the plan or after you complete one task.
 
-If @INPUT.md exists, read it, generate a project summary with all the context and a concrete list of tasks to complete the project. This list must contain small incremental tasks and be comprehensive. Save the description and list to @TODO.md and delete @INPUT.md.
+If @INPUT.md exists, read it, generate a project summary with all the context and a concrete list of tasks to complete the project. This list must contain small incremental tasks and be comprehensive. Save the description and list to @TODO.md and delete @INPUT.md. Commit the change and exit.
 
 If @INPUT.md does not exist, a description of the current project and list of tasks is in @TODO.md. Check that file and choose the most important task.
 
