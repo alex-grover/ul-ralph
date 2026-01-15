@@ -77,10 +77,10 @@ A gear tracking application for ultralight backpacking, inspired by lighterpack.
 - [ ] Make list detail page fully responsive
 
 ### Public List Page
-- [ ] Create public list route at /[username]/[slug]
+- [x] Create public list route at /[username]/[slug]
 - [ ] Implement SSR with caching for public lists
 - [ ] Invalidate cache when list contents change
-- [ ] Handle 404 for non-existent or private lists
+- [x] Handle 404 for non-existent or private lists
 
 ### Homepage & Routing
 - [ ] Redirect authenticated users to most recently edited list

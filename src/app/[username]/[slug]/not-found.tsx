@@ -1,0 +1,22 @@
+import Link from "next/link";
+
+export default function NotFound() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-zinc-50 dark:bg-black">
+      <div className="text-center">
+        <h1 className="text-2xl font-semibold text-zinc-900 dark:text-zinc-100">
+          List not found
+        </h1>
+        <p className="mt-2 text-zinc-600 dark:text-zinc-400">
+          This list doesn&apos;t exist or is not public.
+        </p>
+        <Link
+          href="/"
+          className="mt-4 inline-block text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
+        >
+          Go back home
+        </Link>
+      </div>
+    </div>
+  );
+}
