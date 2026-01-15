@@ -61,7 +61,7 @@ A gear tracking application for ultralight backpacking, inspired by lighterpack.
 - [x] Create list form component (name, description)
 - [x] Create category form component (name, description)
 - [x] Create item form component (name, description, url, weight, unit, label, quantity)
-- [ ] Create list edit popover component
+- [x] Create list edit popover component
 - [ ] Create sidebar component with Vaul for viewing lists (persists open state in cookie)
 - [ ] Create drag-and-drop for category reordering
 - [ ] Create drag-and-drop for item reordering (including cross-category)

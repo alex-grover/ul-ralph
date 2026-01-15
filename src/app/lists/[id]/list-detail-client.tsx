@@ -6,6 +6,7 @@ import { ListForm } from "@/components/list-form";
 import { CategoryForm } from "@/components/category-form";
 import { ItemForm } from "@/components/item-form";
 import { WeightSummary } from "@/components/weight-summary";
+import { ListEditPopover } from "@/components/list-edit-popover";
 import type { Category, Item } from "@/db/schema";
 
 interface ListData {
@@ -50,6 +51,7 @@ export function ListDetailClient({ listId }: ListDetailClientProps) {
   const [isItemFormOpen, setIsItemFormOpen] = React.useState(false);
   const [editingItem, setEditingItem] = React.useState<Item | undefined>();
   const [selectedCategoryId, setSelectedCategoryId] = React.useState<string>("");
+  const [isUpdatingList, setIsUpdatingList] = React.useState(false);
 
   const fetchList = React.useCallback(async () => {
     try {
@@ -88,6 +90,57 @@ export function ListDetailClient({ listId }: ListDetailClientProps) {
 
   const handleListUpdate = (updatedList: { id: string; name: string; slug: string; description: string | null; isPublic: boolean; createdAt: Date; updatedAt: Date }) => {
     setList(updatedList);
+  };
+
+  const handleListDelete = async () => {
+    if (!list) return;
+
+    if (!confirm(`Are you sure you want to delete "${list.name}"? This will also delete all categories and items in this list.`)) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/lists/${listId}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        // Redirect to home after successful deletion
+        window.location.href = "/";
+      }
+    } catch {
+      console.error("Failed to delete list");
+    }
+  };
+
+  const handleTogglePublic = async () => {
+    if (!list) return;
+
+    setIsUpdatingList(true);
+
+    try {
+      const response = await fetch(`/api/lists/${listId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ isPublic: !list.isPublic }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const apiList = data.list;
+        setList({
+          ...apiList,
+          createdAt: new Date(apiList.createdAt),
+          updatedAt: new Date(apiList.updatedAt),
+        });
+      }
+    } catch {
+      console.error("Failed to update list visibility");
+    } finally {
+      setIsUpdatingList(false);
+    }
   };
 
   const handleCategoryCreated = (newCategory: Category) => {
@@ -245,12 +298,13 @@ export function ListDetailClient({ listId }: ListDetailClientProps) {
               </div>
             </div>
             {isOwner && (
-              <button
-                onClick={() => setIsListFormOpen(true)}
-                className="rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
-              >
-                Edit
-              </button>
+              <ListEditPopover
+                list={list}
+                onEdit={() => setIsListFormOpen(true)}
+                onDelete={handleListDelete}
+                onTogglePublic={handleTogglePublic}
+                isUpdating={isUpdatingList}
+              />
             )}
           </div>
         </header>
