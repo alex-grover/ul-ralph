@@ -104,5 +104,5 @@ A gear tracking application for ultralight backpacking, inspired by lighterpack.
 - [x] Test anonymous user to authenticated user data migration
 
 ### Bugs
-- [ ] Dark mode toggle seems to change the background and header color but nothing else
+- [x] Dark mode toggle seems to change the background and header color but nothing else
 - [x] List URL seems to be /list/<uuid> instead of using the slug
