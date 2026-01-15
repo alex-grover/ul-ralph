@@ -41,6 +41,7 @@ A gear tracking application for ultralight backpacking, inspired by lighterpack.
 - [x] Edit list API endpoint (PATCH /api/lists/[id])
 - [x] Delete list API endpoint (DELETE /api/lists/[id])
 - [x] Get user's lists API endpoint (GET /api/lists)
+- [x] Get single list with categories and items API endpoint (GET /api/lists/[id])
 
 ### Categories Feature
 - [x] Create category API endpoint (POST /api/categories)
@@ -68,7 +69,7 @@ A gear tracking application for ultralight backpacking, inspired by lighterpack.
 - [ ] Create dark mode toggle component
 
 ### List Detail Page
-- [ ] Build list detail page layout
+- [x] Build list detail page layout
 - [ ] Create weight summary table component (grouped by category)
 - [ ] Implement weight calculations (base, worn, consumable)
 - [ ] Handle worn items with quantity > 1 (first worn, rest base weight)
