@@ -7,7 +7,48 @@ import {
   getOrCreateAnonymousSession,
 } from "@/lib/session";
 import { generateSlug, makeSlugUnique } from "@/lib/slug";
-import { eq } from "drizzle-orm";
+import { eq, desc } from "drizzle-orm";
+
+export async function GET() {
+  try {
+    // Get current session - support both authenticated and anonymous users
+    const session = await getCurrentSession();
+
+    // If no session exists, return empty array
+    if (!session) {
+      return NextResponse.json({ lists: [] }, { status: 200 });
+    }
+
+    // Build the where clause based on session type
+    const whereClause =
+      session.type === "authenticated"
+        ? eq(lists.userId, session.userId)
+        : eq(lists.anonymousSessionId, session.anonymousSessionId);
+
+    // Fetch all lists for this user/session
+    const userLists = await db
+      .select({
+        id: lists.id,
+        name: lists.name,
+        slug: lists.slug,
+        description: lists.description,
+        isPublic: lists.isPublic,
+        createdAt: lists.createdAt,
+        updatedAt: lists.updatedAt,
+      })
+      .from(lists)
+      .where(whereClause)
+      .orderBy(desc(lists.updatedAt));
+
+    return NextResponse.json({ lists: userLists }, { status: 200 });
+  } catch (error) {
+    console.error("Get lists error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
