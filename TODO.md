@@ -28,7 +28,7 @@ A gear tracking application for ultralight backpacking, inspired by lighterpack.
 - [x] Set up database migrations
 
 ### Authentication
-- [ ] Implement sign up (username, email, password) with validation
+- [x] Implement sign up (username, email, password) with validation
 - [ ] Implement sign in with session management
 - [ ] Implement sign out functionality
 - [ ] Implement password reset flow (request reset, email token, reset form)
