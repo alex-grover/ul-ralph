@@ -7,6 +7,7 @@ import { CategoryForm } from "@/components/category-form";
 import { ItemForm } from "@/components/item-form";
 import { WeightSummary } from "@/components/weight-summary";
 import { ListEditPopover } from "@/components/list-edit-popover";
+import { SortableCategoryList, type DragHandleProps } from "@/components/sortable-category-list";
 import type { Category, Item } from "@/db/schema";
 
 interface ListData {
@@ -318,7 +319,7 @@ export function ListDetailClient({ listId }: ListDetailClientProps) {
         </div>
 
         {/* Categories Section */}
-        <div className="space-y-6">
+        <div>
           {categories.length === 0 ? (
             <div className="rounded-lg border border-dashed border-zinc-300 bg-white p-8 text-center dark:border-zinc-700 dark:bg-zinc-900">
               <p className="text-zinc-600 dark:text-zinc-400">
@@ -336,22 +337,28 @@ export function ListDetailClient({ listId }: ListDetailClientProps) {
             </div>
           ) : (
             <>
-              {categories.map((category) => (
-                <CategorySection
-                  key={category.id}
-                  category={category}
-                  isOwner={isOwner}
-                  onEditCategory={() => openEditCategory(category)}
-                  onDeleteCategory={() => handleCategoryDelete(category.id)}
-                  onAddItem={() => openAddItem(category.id)}
-                  onEditItem={openEditItem}
-                  onDeleteItem={(itemId) => handleItemDelete(itemId, category.id)}
-                />
-              ))}
+              <SortableCategoryList
+                categories={categories}
+                listId={listId}
+                isOwner={isOwner}
+                onReorder={setCategories}
+                renderCategory={(category, dragHandleProps) => (
+                  <CategorySection
+                    category={category}
+                    isOwner={isOwner}
+                    dragHandleProps={dragHandleProps}
+                    onEditCategory={() => openEditCategory(category)}
+                    onDeleteCategory={() => handleCategoryDelete(category.id)}
+                    onAddItem={() => openAddItem(category.id)}
+                    onEditItem={openEditItem}
+                    onDeleteItem={(itemId) => handleItemDelete(itemId, category.id)}
+                  />
+                )}
+              />
               {isOwner && (
                 <button
                   onClick={openAddCategory}
-                  className="w-full rounded-lg border border-dashed border-zinc-300 bg-white py-4 text-sm font-medium text-zinc-600 hover:border-zinc-400 hover:text-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-200"
+                  className="mt-6 w-full rounded-lg border border-dashed border-zinc-300 bg-white py-4 text-sm font-medium text-zinc-600 hover:border-zinc-400 hover:text-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-400 dark:hover:border-zinc-600 dark:hover:text-zinc-200"
                 >
                   + Add Category
                 </button>
@@ -397,6 +404,7 @@ export function ListDetailClient({ listId }: ListDetailClientProps) {
 interface CategorySectionProps {
   category: CategoryWithItems;
   isOwner: boolean;
+  dragHandleProps: DragHandleProps;
   onEditCategory: () => void;
   onDeleteCategory: () => void;
   onAddItem: () => void;
@@ -407,25 +415,44 @@ interface CategorySectionProps {
 function CategorySection({
   category,
   isOwner,
+  dragHandleProps,
   onEditCategory,
   onDeleteCategory,
   onAddItem,
   onEditItem,
   onDeleteItem,
 }: CategorySectionProps) {
+  const { attributes, listeners, isDragging } = dragHandleProps;
+
   return (
-    <div className="rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+    <div
+      className={`rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900 ${
+        isDragging ? "opacity-50 shadow-lg" : ""
+      }`}
+    >
       {/* Category Header */}
       <div className="flex items-center justify-between border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
-        <div>
-          <h2 className="font-semibold text-zinc-900 dark:text-zinc-100">
-            {category.name}
-          </h2>
-          {category.description && (
-            <p className="text-sm text-zinc-500 dark:text-zinc-500">
-              {category.description}
-            </p>
+        <div className="flex items-center gap-3 min-w-0 flex-1">
+          {isOwner && (
+            <button
+              className="cursor-grab touch-none rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-300 active:cursor-grabbing"
+              aria-label="Drag to reorder category"
+              {...attributes}
+              {...listeners}
+            >
+              <DragHandleIcon className="h-4 w-4" />
+            </button>
           )}
+          <div className="min-w-0 flex-1">
+            <h2 className="font-semibold text-zinc-900 dark:text-zinc-100">
+              {category.name}
+            </h2>
+            {category.description && (
+              <p className="text-sm text-zinc-500 dark:text-zinc-500">
+                {category.description}
+              </p>
+            )}
+          </div>
         </div>
         {isOwner && (
           <div className="flex items-center gap-2">
@@ -615,6 +642,23 @@ function LinkIcon({ className }: { className?: string }) {
       <path
         fillRule="evenodd"
         d="M6.194 12.753a.75.75 0 001.06.053L16.5 4.44v2.81a.75.75 0 001.5 0v-4.5a.75.75 0 00-.75-.75h-4.5a.75.75 0 000 1.5h2.553l-9.056 8.194a.75.75 0 00-.053 1.06z"
+        clipRule="evenodd"
+      />
+    </svg>
+  );
+}
+
+function DragHandleIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 20 20"
+      fill="currentColor"
+      className={className}
+    >
+      <path
+        fillRule="evenodd"
+        d="M3 7a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 13a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
         clipRule="evenodd"
       />
     </svg>
