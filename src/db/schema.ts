@@ -27,6 +27,17 @@ export const anonymousSessions = pgTable("anonymous_sessions", {
   expiresAt: timestamp("expires_at").notNull(),
 });
 
+// User sessions table for authenticated users
+export const sessions = pgTable("sessions", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: uuid("user_id")
+    .references(() => users.id, { onDelete: "cascade" })
+    .notNull(),
+  sessionToken: varchar("session_token", { length: 255 }).notNull().unique(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+});
+
 // Lists table
 export const lists = pgTable("lists", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -80,6 +91,9 @@ export type NewUser = typeof users.$inferInsert;
 
 export type AnonymousSession = typeof anonymousSessions.$inferSelect;
 export type NewAnonymousSession = typeof anonymousSessions.$inferInsert;
+
+export type Session = typeof sessions.$inferSelect;
+export type NewSession = typeof sessions.$inferInsert;
 
 export type List = typeof lists.$inferSelect;
 export type NewList = typeof lists.$inferInsert;
