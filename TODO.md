@@ -40,7 +40,7 @@ A gear tracking application for ultralight backpacking, inspired by lighterpack.
 - [x] Generate unique slug per user from list name
 - [x] Edit list API endpoint (PATCH /api/lists/[id])
 - [x] Delete list API endpoint (DELETE /api/lists/[id])
-- [ ] Get user's lists API endpoint (GET /api/lists)
+- [x] Get user's lists API endpoint (GET /api/lists)
 
 ### Categories Feature
 - [ ] Create category API endpoint (POST /api/categories)
