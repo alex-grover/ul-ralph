@@ -1,0 +1,97 @@
+# Ultralight Gear Tracker
+
+A gear tracking application for ultralight backpacking, inspired by lighterpack.com but focused on better design and UX.
+
+## Tech Stack
+- TypeScript
+- Next.js (App Router)
+- Tailwind CSS
+- Drizzle ORM with PostgreSQL
+- next-themes for dark mode
+- Vaul for sheets/drawers
+
+## Tasks
+
+### Project Setup
+- [ ] Initialize Next.js project with TypeScript and Tailwind
+- [ ] Set up Drizzle ORM with PostgreSQL connection
+- [ ] Configure next-themes for dark mode support
+- [ ] Install and configure Vaul library
+- [ ] Set up project folder structure (components, lib, db, etc.)
+
+### Database Schema
+- [ ] Create users table (id, username, email, password_hash, created_at, updated_at)
+- [ ] Create anonymous_sessions table for anonymous user support
+- [ ] Create lists table (id, user_id, anonymous_session_id, name, slug, description, is_public, created_at, updated_at)
+- [ ] Create categories table (id, list_id, name, description, position, created_at, updated_at)
+- [ ] Create items table (id, category_id, name, description, url, weight_amount, weight_unit, label, quantity, position, created_at, updated_at)
+- [ ] Set up database migrations
+
+### Authentication
+- [ ] Implement sign up (username, email, password) with validation
+- [ ] Implement sign in with session management
+- [ ] Implement sign out functionality
+- [ ] Implement password reset flow (request reset, email token, reset form)
+- [ ] Implement anonymous user session creation and tracking
+- [ ] Link anonymous data to user account on sign up
+
+### Lists Feature
+- [ ] Create list API endpoint (POST /api/lists)
+- [ ] Generate unique slug per user from list name
+- [ ] Edit list API endpoint (PATCH /api/lists/[id])
+- [ ] Delete list API endpoint (DELETE /api/lists/[id])
+- [ ] Update list privacy setting (private/public)
+- [ ] Get user's lists API endpoint (GET /api/lists)
+
+### Categories Feature
+- [ ] Create category API endpoint (POST /api/categories)
+- [ ] Edit category API endpoint (PATCH /api/categories/[id])
+- [ ] Delete category API endpoint (DELETE /api/categories/[id])
+- [ ] Reorder categories API endpoint (PATCH /api/categories/reorder)
+
+### Items Feature
+- [ ] Create item API endpoint (POST /api/items)
+- [ ] Edit item API endpoint (PATCH /api/items/[id])
+- [ ] Delete item API endpoint (DELETE /api/items/[id])
+- [ ] Reorder items API endpoint (PATCH /api/items/reorder) - supports cross-category moves
+- [ ] Validate weight units (g, oz) and labels (none, worn, consumable)
+
+### UI Components
+- [ ] Create responsive Dialog/Sheet component (Dialog on desktop, Vaul sheet on mobile)
+- [ ] Create list form component (name, description)
+- [ ] Create category form component (name, description)
+- [ ] Create item form component (name, description, url, weight, unit, label, quantity)
+- [ ] Create list edit popover component
+- [ ] Create sidebar component with Vaul for viewing lists (persists open state in cookie)
+- [ ] Create drag-and-drop for category reordering
+- [ ] Create drag-and-drop for item reordering (including cross-category)
+- [ ] Create weight unit selector component (g, kg, lbs, oz)
+- [ ] Create dark mode toggle component
+
+### List Detail Page
+- [ ] Build list detail page layout
+- [ ] Create weight summary table component (grouped by category)
+- [ ] Implement weight calculations (base, worn, consumable)
+- [ ] Handle worn items with quantity > 1 (first worn, rest base weight)
+- [ ] Implement unit conversion for display (g, kg, lbs, oz)
+- [ ] Make list detail page fully responsive
+
+### Public List Page
+- [ ] Create public list route at /[username]/[slug]
+- [ ] Implement SSR with caching for public lists
+- [ ] Invalidate cache when list contents change
+- [ ] Handle 404 for non-existent or private lists
+
+### Homepage & Routing
+- [ ] Redirect authenticated users to most recently edited list
+- [ ] Implement streaming SSR for list page
+- [ ] Handle anonymous users landing on blank list detail page
+- [ ] Ensure anonymous users can perform all actions except sharing
+
+### Polish & Testing
+- [ ] Ensure all UI is responsive and works on mobile
+- [ ] Add loading states and error handling
+- [ ] Write tests for authentication flows
+- [ ] Write tests for list/category/item CRUD operations
+- [ ] Write tests for weight calculations
+- [ ] Test anonymous user to authenticated user data migration
