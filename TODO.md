@@ -57,7 +57,7 @@ A gear tracking application for ultralight backpacking, inspired by lighterpack.
 
 ### UI Components
 - [x] Create responsive Dialog/Sheet component (Dialog on desktop, Vaul sheet on mobile)
-- [ ] Create list form component (name, description)
+- [x] Create list form component (name, description)
 - [ ] Create category form component (name, description)
 - [ ] Create item form component (name, description, url, weight, unit, label, quantity)
 - [ ] Create list edit popover component
