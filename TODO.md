@@ -49,11 +49,11 @@ A gear tracking application for ultralight backpacking, inspired by lighterpack.
 - [ ] Reorder categories API endpoint (PATCH /api/categories/reorder)
 
 ### Items Feature
-- [ ] Create item API endpoint (POST /api/items)
+- [x] Create item API endpoint (POST /api/items)
 - [ ] Edit item API endpoint (PATCH /api/items/[id])
 - [ ] Delete item API endpoint (DELETE /api/items/[id])
 - [ ] Reorder items API endpoint (PATCH /api/items/reorder) - supports cross-category moves
-- [ ] Validate weight units (g, oz) and labels (none, worn, consumable)
+- [x] Validate weight units (g, oz) and labels (none, worn, consumable)
 
 ### UI Components
 - [ ] Create responsive Dialog/Sheet component (Dialog on desktop, Vaul sheet on mobile)
