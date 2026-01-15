@@ -36,8 +36,8 @@ A gear tracking application for ultralight backpacking, inspired by lighterpack.
 - [ ] Link anonymous data to user account on sign up
 
 ### Lists Feature
-- [ ] Create list API endpoint (POST /api/lists)
-- [ ] Generate unique slug per user from list name
+- [x] Create list API endpoint (POST /api/lists)
+- [x] Generate unique slug per user from list name
 - [ ] Edit list API endpoint (PATCH /api/lists/[id])
 - [ ] Delete list API endpoint (DELETE /api/lists/[id])
 - [ ] Update list privacy setting (private/public)
