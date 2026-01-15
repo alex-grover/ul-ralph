@@ -1,53 +1,52 @@
 import { notFound } from "next/navigation";
 import { db } from "@/db";
 import { lists, categories, items } from "@/db/schema";
-import { eq, asc, inArray } from "drizzle-orm";
+import { eq, asc, inArray, and, or } from "drizzle-orm";
 import { getCurrentSession } from "@/lib/session";
 import { ListDetailClient, type ListPageData } from "./list-detail-client";
 
-const UUID_REGEX =
-  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-
 type PageProps = {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string }>;
 };
 
-async function getListData(listId: string): Promise<ListPageData | null> {
-  // Validate UUID format
-  if (!UUID_REGEX.test(listId)) {
-    return null;
-  }
-
+async function getListData(slug: string): Promise<ListPageData | null> {
   // Get current session
   const session = await getCurrentSession();
 
-  // Fetch the list
-  const [list] = await db
+  if (!session) {
+    // No session means no access to any private lists
+    return null;
+  }
+
+  // Build ownership condition based on session type
+  const ownershipCondition =
+    session.type === "authenticated"
+      ? eq(lists.userId, session.userId)
+      : eq(lists.anonymousSessionId, session.anonymousSessionId);
+
+  // Find the list by slug where user owns it, or it's public and user can access
+  // First, try to find a list the user owns with this slug
+  let [list] = await db
     .select()
     .from(lists)
-    .where(eq(lists.id, listId))
+    .where(and(eq(lists.slug, slug), ownershipCondition))
     .limit(1);
 
+  // If not found as owner, check if there's a public list the user can view
+  // (This handles the case where someone visits their own list URL)
   if (!list) {
+    // For now, if user doesn't own a list with this slug, return null
+    // Public lists should be accessed via /{username}/{slug} route
     return null;
   }
 
-  // Check access: either the list is public, or the user owns it
-  const isOwner =
-    session &&
-    ((session.type === "authenticated" && list.userId === session.userId) ||
-      (session.type === "anonymous" &&
-        list.anonymousSessionId === session.anonymousSessionId));
-
-  if (!list.isPublic && !isOwner) {
-    return null;
-  }
+  const isOwner = true; // If we found the list via ownership condition, user is the owner
 
   // Fetch categories for this list, ordered by position
   const listCategories = await db
     .select()
     .from(categories)
-    .where(eq(categories.listId, listId))
+    .where(eq(categories.listId, list.id))
     .orderBy(asc(categories.position));
 
   // Fetch all items for these categories
@@ -81,18 +80,19 @@ async function getListData(listId: string): Promise<ListPageData | null> {
       updatedAt: list.updatedAt,
     },
     categories: categoriesWithItems,
-    isOwner: !!isOwner,
-    isAuthenticated: session?.type === "authenticated",
+    isOwner: isOwner,
+    isAuthenticated: session.type === "authenticated",
   };
 }
 
 export default async function ListDetailPage({ params }: PageProps) {
-  const { id } = await params;
-  const data = await getListData(id);
+  const { slug } = await params;
+  const data = await getListData(slug);
 
   if (!data) {
     notFound();
   }
 
-  return <ListDetailClient initialData={data} listId={id} />;
+  // Pass list.id (UUID) for API operations, but routing uses slug
+  return <ListDetailClient initialData={data} listId={data.list.id} />;
 }

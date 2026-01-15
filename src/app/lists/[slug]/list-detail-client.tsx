@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useRouter } from "next/navigation";
 import { ListForm } from "@/components/list-form";
 import { CategoryForm } from "@/components/category-form";
 import { ItemForm } from "@/components/item-form";
@@ -52,6 +53,7 @@ export function ListDetailClient({ listId, initialData }: ListDetailClientProps)
   const [isOwner] = React.useState(initialData.isOwner);
   const [isAuthenticated] = React.useState(initialData.isAuthenticated);
   const { showToast } = useToast();
+  const router = useRouter();
 
   // Form dialogs state
   const [isListFormOpen, setIsListFormOpen] = React.useState(false);
@@ -71,6 +73,10 @@ export function ListDetailClient({ listId, initialData }: ListDetailClientProps)
   const [isDeletingItem, setIsDeletingItem] = React.useState(false);
 
   const handleListUpdate = (updatedList: { id: string; name: string; slug: string; description: string | null; isPublic: boolean; createdAt: Date; updatedAt: Date }) => {
+    // If the slug changed, update the URL to match
+    if (updatedList.slug !== list.slug) {
+      router.replace(`/lists/${updatedList.slug}`);
+    }
     setList(updatedList);
   };
 

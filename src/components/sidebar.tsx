@@ -234,8 +234,8 @@ export function ListsSidebarContent() {
     }
   };
 
-  // Extract current list ID from pathname
-  const currentListId = pathname?.startsWith("/lists/")
+  // Extract current list slug from pathname
+  const currentListSlug = pathname?.startsWith("/lists/")
     ? pathname.split("/")[2]
     : null;
 
@@ -276,10 +276,10 @@ export function ListsSidebarContent() {
           {lists.map((list) => (
             <Link
               key={list.id}
-              href={`/lists/${list.id}`}
+              href={`/lists/${list.slug}`}
               onClick={handleListClick}
               className={`flex items-center gap-2 rounded-md px-2 py-2 text-sm transition-colors ${
-                currentListId === list.id
+                currentListSlug === list.slug
                   ? "bg-zinc-100 font-medium text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100"
                   : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800/50 dark:hover:text-zinc-100"
               }`}

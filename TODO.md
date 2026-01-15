@@ -104,6 +104,5 @@ A gear tracking application for ultralight backpacking, inspired by lighterpack.
 - [x] Test anonymous user to authenticated user data migration
 
 ### Bugs
-- [x] Dark mode is not implemented for most of the site
-- [x] Deleting things uses a native alert instead of a nicer custom dialog
-- [x] List slug should be a slugified, unique version of the list name instead of a uuid
+- [ ] Dark mode toggle seems to change the background and header color but nothing else
+- [x] List URL seems to be /list/<uuid> instead of using the slug

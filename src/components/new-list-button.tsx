@@ -19,7 +19,7 @@ export function NewListButtonClient() {
   const router = useRouter();
 
   const handleSuccess = (list: ListData) => {
-    router.push(`/lists/${list.id}`);
+    router.push(`/lists/${list.slug}`);
     router.refresh();
   };
 

@@ -57,9 +57,9 @@ async function createList() {
       description: null,
       isPublic: false,
     })
-    .returning({ id: lists.id });
+    .returning({ slug: lists.slug });
 
-  redirect(`/lists/${newList.id}`);
+  redirect(`/lists/${newList.slug}`);
 }
 
 export default async function Home() {
@@ -69,14 +69,14 @@ export default async function Home() {
   if (user) {
     // Get most recently edited list for authenticated user
     const [mostRecentList] = await db
-      .select({ id: lists.id })
+      .select({ slug: lists.slug })
       .from(lists)
       .where(eq(lists.userId, user.id))
       .orderBy(desc(lists.updatedAt))
       .limit(1);
 
     if (mostRecentList) {
-      redirect(`/lists/${mostRecentList.id}`);
+      redirect(`/lists/${mostRecentList.slug}`);
     }
   } else {
     // Check for anonymous session
@@ -85,14 +85,14 @@ export default async function Home() {
     if (anonymousSession) {
       // Get most recently edited list for anonymous user
       const [mostRecentList] = await db
-        .select({ id: lists.id })
+        .select({ slug: lists.slug })
         .from(lists)
         .where(eq(lists.anonymousSessionId, anonymousSession.id))
         .orderBy(desc(lists.updatedAt))
         .limit(1);
 
       if (mostRecentList) {
-        redirect(`/lists/${mostRecentList.id}`);
+        redirect(`/lists/${mostRecentList.slug}`);
       }
     }
   }
