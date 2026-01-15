@@ -97,7 +97,7 @@ A gear tracking application for ultralight backpacking, inspired by lighterpack.
 - [x] Write tests for authentication flows
 - [x] Write tests for lists API CRUD operations
 - [x] Write tests for categories API CRUD operations
-- [ ] Write tests for items API CRUD operations
+- [x] Write tests for items API CRUD operations
 - [ ] Write tests for public list API endpoint
 - [x] Write tests for weight calculations
 - [x] Test anonymous user to authenticated user data migration
