@@ -70,10 +70,10 @@ A gear tracking application for ultralight backpacking, inspired by lighterpack.
 
 ### List Detail Page
 - [x] Build list detail page layout
-- [ ] Create weight summary table component (grouped by category)
-- [ ] Implement weight calculations (base, worn, consumable)
-- [ ] Handle worn items with quantity > 1 (first worn, rest base weight)
-- [ ] Implement unit conversion for display (g, kg, lbs, oz)
+- [x] Create weight summary table component (grouped by category)
+- [x] Implement weight calculations (base, worn, consumable)
+- [x] Handle worn items with quantity > 1 (first worn, rest base weight)
+- [x] Implement unit conversion for display (g, kg, lbs, oz)
 - [ ] Make list detail page fully responsive
 
 ### Public List Page

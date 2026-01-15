@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ListForm } from "@/components/list-form";
 import { CategoryForm } from "@/components/category-form";
 import { ItemForm } from "@/components/item-form";
+import { WeightSummary } from "@/components/weight-summary";
 import type { Category, Item } from "@/db/schema";
 
 interface ListData {
@@ -253,6 +254,11 @@ export function ListDetailClient({ listId }: ListDetailClientProps) {
             )}
           </div>
         </header>
+
+        {/* Weight Summary */}
+        <div className="mb-8">
+          <WeightSummary categories={categories} />
+        </div>
 
         {/* Categories Section */}
         <div className="space-y-6">
