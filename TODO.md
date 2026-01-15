@@ -56,7 +56,7 @@ A gear tracking application for ultralight backpacking, inspired by lighterpack.
 - [x] Validate weight units (g, oz) and labels (none, worn, consumable)
 
 ### UI Components
-- [ ] Create responsive Dialog/Sheet component (Dialog on desktop, Vaul sheet on mobile)
+- [x] Create responsive Dialog/Sheet component (Dialog on desktop, Vaul sheet on mobile)
 - [ ] Create list form component (name, description)
 - [ ] Create category form component (name, description)
 - [ ] Create item form component (name, description, url, weight, unit, label, quantity)
