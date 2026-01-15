@@ -14,6 +14,12 @@
 - `npm run db:push` - Push schema directly to database (development)
 - `npm run db:studio` - Open Drizzle Studio GUI
 
+## Testing
+
+- `npm run test` - Run tests in watch mode
+- `npm run test:run` - Run tests once
+- `npm run test:coverage` - Run tests with coverage
+
 ## Environment Variables
 
 Copy `.env.example` to `.env.local` and configure:
