@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
+import { ToastProvider } from "@/components/ui/toast";
 import {
   SidebarProvider,
   Sidebar,
@@ -45,22 +46,24 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider>
-          <SidebarProvider defaultOpen={defaultOpen}>
-            <Sidebar>
-              <SidebarHeader>
-                <span className="font-semibold text-zinc-900 dark:text-zinc-100">
-                  Ultralight
-                </span>
-              </SidebarHeader>
-              <SidebarContent>
-                <ListsSidebarContent />
-              </SidebarContent>
-            </Sidebar>
-            <SidebarLayout>
-              <AppHeader />
-              {children}
-            </SidebarLayout>
-          </SidebarProvider>
+          <ToastProvider>
+            <SidebarProvider defaultOpen={defaultOpen}>
+              <Sidebar>
+                <SidebarHeader>
+                  <span className="font-semibold text-zinc-900 dark:text-zinc-100">
+                    Ultralight
+                  </span>
+                </SidebarHeader>
+                <SidebarContent>
+                  <ListsSidebarContent />
+                </SidebarContent>
+              </Sidebar>
+              <SidebarLayout>
+                <AppHeader />
+                {children}
+              </SidebarLayout>
+            </SidebarProvider>
+          </ToastProvider>
         </ThemeProvider>
       </body>
     </html>

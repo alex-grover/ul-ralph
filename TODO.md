@@ -90,7 +90,7 @@ A gear tracking application for ultralight backpacking, inspired by lighterpack.
 
 ### Polish & Testing
 - [ ] Ensure all UI is responsive and works on mobile
-- [ ] Add loading states and error handling
+- [x] Add loading states and error handling
 - [x] Write tests for authentication flows
 - [x] Write tests for list/category/item CRUD operations
 - [x] Write tests for weight calculations

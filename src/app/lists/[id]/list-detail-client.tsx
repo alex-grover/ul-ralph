@@ -8,6 +8,7 @@ import { WeightSummary } from "@/components/weight-summary";
 import { ListEditPopover } from "@/components/list-edit-popover";
 import { SortableCategoryList, type DragHandleProps } from "@/components/sortable-category-list";
 import { SortableItemList, ItemDndProvider, type ItemDragHandleProps } from "@/components/sortable-item-list";
+import { useToast } from "@/components/ui/toast";
 import type { Category, Item } from "@/db/schema";
 
 interface ListData {
@@ -49,6 +50,7 @@ export function ListDetailClient({ listId, initialData }: ListDetailClientProps)
   const [categories, setCategories] = React.useState<CategoryWithItems[]>(initialData.categories);
   const [isOwner] = React.useState(initialData.isOwner);
   const [isAuthenticated] = React.useState(initialData.isAuthenticated);
+  const { showToast } = useToast();
 
   // Form dialogs state
   const [isListFormOpen, setIsListFormOpen] = React.useState(false);
@@ -64,7 +66,6 @@ export function ListDetailClient({ listId, initialData }: ListDetailClientProps)
   };
 
   const handleListDelete = async () => {
-
     if (!confirm(`Are you sure you want to delete "${list.name}"? This will also delete all categories and items in this list.`)) {
       return;
     }
@@ -75,11 +76,14 @@ export function ListDetailClient({ listId, initialData }: ListDetailClientProps)
       });
 
       if (response.ok) {
+        showToast("List deleted", "success");
         // Redirect to home after successful deletion
         window.location.href = "/";
+      } else {
+        showToast("Failed to delete list", "error");
       }
     } catch {
-      console.error("Failed to delete list");
+      showToast("Failed to delete list", "error");
     }
   };
 
@@ -105,9 +109,12 @@ export function ListDetailClient({ listId, initialData }: ListDetailClientProps)
           createdAt: new Date(apiList.createdAt),
           updatedAt: new Date(apiList.updatedAt),
         });
+        showToast(apiList.isPublic ? "List is now public" : "List is now private", "success");
+      } else {
+        showToast("Failed to update visibility", "error");
       }
     } catch {
-      console.error("Failed to update list visibility");
+      showToast("Failed to update visibility", "error");
     } finally {
       setIsUpdatingList(false);
     }
@@ -137,9 +144,12 @@ export function ListDetailClient({ listId, initialData }: ListDetailClientProps)
 
       if (response.ok) {
         setCategories((prev) => prev.filter((c) => c.id !== categoryId));
+        showToast("Category deleted", "success");
+      } else {
+        showToast("Failed to delete category", "error");
       }
     } catch {
-      console.error("Failed to delete category");
+      showToast("Failed to delete category", "error");
     }
   };
 
@@ -186,9 +196,12 @@ export function ListDetailClient({ listId, initialData }: ListDetailClientProps)
               : c
           )
         );
+        showToast("Item deleted", "success");
+      } else {
+        showToast("Failed to delete item", "error");
       }
     } catch {
-      console.error("Failed to delete item");
+      showToast("Failed to delete item", "error");
     }
   };
 
