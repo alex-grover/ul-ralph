@@ -29,3 +29,16 @@ export const updateCategorySchema = z.object({
 });
 
 export type UpdateCategoryInput = z.infer<typeof updateCategorySchema>;
+
+export const reorderCategoriesSchema = z.object({
+  listId: z.string().uuid("Invalid list ID"),
+  categoryIds: z
+    .array(z.string().uuid("Invalid category ID"))
+    .min(1, "At least one category ID is required")
+    .refine(
+      (ids) => new Set(ids).size === ids.length,
+      "Duplicate category IDs are not allowed"
+    ),
+});
+
+export type ReorderCategoriesInput = z.infer<typeof reorderCategoriesSchema>;

@@ -47,7 +47,7 @@ A gear tracking application for ultralight backpacking, inspired by lighterpack.
 - [x] Create category API endpoint (POST /api/categories)
 - [x] Edit category API endpoint (PATCH /api/categories/[id])
 - [x] Delete category API endpoint (DELETE /api/categories/[id])
-- [ ] Reorder categories API endpoint (PATCH /api/categories/reorder)
+- [x] Reorder categories API endpoint (PATCH /api/categories/reorder)
 
 ### Items Feature
 - [x] Create item API endpoint (POST /api/items)
