@@ -71,3 +71,22 @@ export const updateItemSchema = z.object({
 });
 
 export type UpdateItemInput = z.infer<typeof updateItemSchema>;
+
+export const reorderItemsSchema = z.object({
+  listId: z.string().uuid("Invalid list ID"),
+  items: z
+    .array(
+      z.object({
+        id: z.string().uuid("Invalid item ID"),
+        categoryId: z.string().uuid("Invalid category ID"),
+        position: z.number().int("Position must be an integer").min(0, "Position cannot be negative"),
+      })
+    )
+    .min(1, "At least one item is required")
+    .refine(
+      (itemsArray) => new Set(itemsArray.map((i) => i.id)).size === itemsArray.length,
+      "Duplicate item IDs are not allowed"
+    ),
+});
+
+export type ReorderItemsInput = z.infer<typeof reorderItemsSchema>;
