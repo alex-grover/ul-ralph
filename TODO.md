@@ -102,3 +102,8 @@ A gear tracking application for ultralight backpacking, inspired by lighterpack.
 - [x] Write tests for public list API endpoint
 - [x] Write tests for weight calculations
 - [x] Test anonymous user to authenticated user data migration
+
+### Bugs
+- [x] Dark mode is not implemented for most of the site
+- [ ] Deleting things uses a native alert instead of a nicer custom dialog
+- [ ] List slug should be a slugified, unique version of the list name instead of a uuid
