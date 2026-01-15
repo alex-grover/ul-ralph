@@ -6,6 +6,9 @@ import { getCurrentSession } from "@/lib/session";
 import { generateSlug, makeSlugUnique } from "@/lib/slug";
 import { eq, and, ne } from "drizzle-orm";
 
+const UUID_REGEX =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 type RouteParams = {
   params: Promise<{ id: string }>;
 };
@@ -15,9 +18,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     const { id } = await params;
 
     // Validate UUID format
-    const uuidRegex =
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    if (!uuidRegex.test(id)) {
+    if (!UUID_REGEX.test(id)) {
       return NextResponse.json({ error: "Invalid list ID" }, { status: 400 });
     }
 
@@ -132,6 +133,58 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     });
   } catch (error) {
     console.error("Update list error:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(_request: NextRequest, { params }: RouteParams) {
+  try {
+    const { id } = await params;
+
+    // Validate UUID format
+    if (!UUID_REGEX.test(id)) {
+      return NextResponse.json({ error: "Invalid list ID" }, { status: 400 });
+    }
+
+    // Get current session
+    const session = await getCurrentSession();
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Fetch the list and verify ownership
+    const [existingList] = await db
+      .select()
+      .from(lists)
+      .where(eq(lists.id, id))
+      .limit(1);
+
+    if (!existingList) {
+      return NextResponse.json({ error: "List not found" }, { status: 404 });
+    }
+
+    // Verify ownership
+    const isOwner =
+      (session.type === "authenticated" &&
+        existingList.userId === session.userId) ||
+      (session.type === "anonymous" &&
+        existingList.anonymousSessionId === session.anonymousSessionId);
+
+    if (!isOwner) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    // Delete the list (categories and items will cascade delete)
+    await db.delete(lists).where(eq(lists.id, id));
+
+    return NextResponse.json({
+      message: "List deleted successfully",
+    });
+  } catch (error) {
+    console.error("Delete list error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
