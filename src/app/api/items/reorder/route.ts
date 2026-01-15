@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { lists, categories, items } from "@/db/schema";
 import { reorderItemsSchema } from "@/lib/validations/item";
 import { getCurrentSession } from "@/lib/session";
+import { revalidateListCache } from "@/lib/cache";
 import { eq, inArray } from "drizzle-orm";
 
 export async function PATCH(request: NextRequest) {
@@ -151,6 +152,9 @@ export async function PATCH(request: NextRequest) {
       .from(items)
       .where(inArray(items.id, itemIds))
       .orderBy(items.categoryId, items.position);
+
+    // Invalidate cache for this list
+    revalidateListCache(listId);
 
     return NextResponse.json({
       message: "Items reordered successfully",

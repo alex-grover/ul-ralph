@@ -1,15 +1,17 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { unstable_cache } from "next/cache";
 import { db } from "@/db";
 import { users, lists, categories, items } from "@/db/schema";
 import { eq, and, asc, inArray } from "drizzle-orm";
 import { PublicListClient } from "./public-list-client";
+import { getListCacheTag } from "@/lib/cache";
 
 type PageProps = {
   params: Promise<{ username: string; slug: string }>;
 };
 
-async function getListData(username: string, slug: string) {
+async function fetchListData(username: string, slug: string) {
   // Find the user by username
   const [user] = await db
     .select()
@@ -65,6 +67,7 @@ async function getListData(username: string, slug: string) {
   }));
 
   return {
+    listId: list.id,
     list: {
       id: list.id,
       name: list.name,
@@ -77,6 +80,46 @@ async function getListData(username: string, slug: string) {
     categories: categoriesWithItems,
     username: user.username,
   };
+}
+
+/**
+ * Get list data with caching enabled.
+ * First we need to find the list ID to generate the cache tag,
+ * then we cache the full data fetch.
+ */
+async function getListData(username: string, slug: string) {
+  // First, do a quick uncached lookup to find the list ID for cache tagging
+  const [user] = await db
+    .select({ id: users.id })
+    .from(users)
+    .where(eq(users.username, username))
+    .limit(1);
+
+  if (!user) {
+    return null;
+  }
+
+  const [list] = await db
+    .select({ id: lists.id, isPublic: lists.isPublic })
+    .from(lists)
+    .where(and(eq(lists.userId, user.id), eq(lists.slug, slug)))
+    .limit(1);
+
+  if (!list || !list.isPublic) {
+    return null;
+  }
+
+  // Now fetch with caching using the list ID as a tag
+  const cachedFetch = unstable_cache(
+    async () => fetchListData(username, slug),
+    [`public-list-${username}-${slug}`],
+    {
+      tags: [getListCacheTag(list.id)],
+      revalidate: 3600, // Cache for 1 hour
+    }
+  );
+
+  return cachedFetch();
 }
 
 export async function generateMetadata({

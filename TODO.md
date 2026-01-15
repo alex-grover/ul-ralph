@@ -78,8 +78,8 @@ A gear tracking application for ultralight backpacking, inspired by lighterpack.
 
 ### Public List Page
 - [x] Create public list route at /[username]/[slug]
-- [ ] Implement SSR with caching for public lists
-- [ ] Invalidate cache when list contents change
+- [x] Implement SSR with caching for public lists
+- [x] Invalidate cache when list contents change
 - [x] Handle 404 for non-existent or private lists
 
 ### Homepage & Routing

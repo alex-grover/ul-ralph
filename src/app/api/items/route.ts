@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { lists, categories, items } from "@/db/schema";
 import { createItemSchema } from "@/lib/validations/item";
 import { getCurrentSession } from "@/lib/session";
+import { revalidateListCache } from "@/lib/cache";
 import { eq, sql } from "drizzle-orm";
 
 export async function POST(request: NextRequest) {
@@ -109,6 +110,9 @@ export async function POST(request: NextRequest) {
         createdAt: items.createdAt,
         updatedAt: items.updatedAt,
       });
+
+    // Invalidate cache for the parent list
+    revalidateListCache(list.id);
 
     return NextResponse.json(
       {

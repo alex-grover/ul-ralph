@@ -3,6 +3,7 @@ import { db } from "@/db";
 import { lists, categories, items } from "@/db/schema";
 import { updateItemSchema } from "@/lib/validations/item";
 import { getCurrentSession } from "@/lib/session";
+import { revalidateListCache } from "@/lib/cache";
 import { eq } from "drizzle-orm";
 
 const UUID_REGEX =
@@ -150,6 +151,9 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
         updatedAt: items.updatedAt,
       });
 
+    // Invalidate cache for the parent list
+    revalidateListCache(list.id);
+
     return NextResponse.json({
       message: "Item updated successfully",
       item: updatedItem,
@@ -223,6 +227,9 @@ export async function DELETE(_request: NextRequest, { params }: RouteParams) {
     if (!isOwner) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
+
+    // Invalidate cache for the parent list
+    revalidateListCache(list.id);
 
     // Delete the item
     await db.delete(items).where(eq(items.id, id));

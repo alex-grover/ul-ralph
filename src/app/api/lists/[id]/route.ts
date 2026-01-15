@@ -4,6 +4,7 @@ import { lists, categories, items } from "@/db/schema";
 import { updateListSchema } from "@/lib/validations/list";
 import { getCurrentSession } from "@/lib/session";
 import { generateSlug, makeSlugUnique } from "@/lib/slug";
+import { revalidateListCache } from "@/lib/cache";
 import { eq, and, ne, asc, inArray } from "drizzle-orm";
 
 const UUID_REGEX =
@@ -218,6 +219,9 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
         updatedAt: lists.updatedAt,
       });
 
+    // Invalidate cache for this list
+    revalidateListCache(id);
+
     return NextResponse.json({
       message: "List updated successfully",
       list: updatedList,
@@ -267,6 +271,9 @@ export async function DELETE(_request: NextRequest, { params }: RouteParams) {
     if (!isOwner) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
+
+    // Invalidate cache for this list before deletion
+    revalidateListCache(id);
 
     // Delete the list (categories and items will cascade delete)
     await db.delete(lists).where(eq(lists.id, id));
